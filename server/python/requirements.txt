@@ -1,0 +1,6 @@
+# Demucs separation runtime (Unit 7) — installed into `server/python/.venv`:
+#   pip install demucs numpy
+# `numpy` is required even though demucs 4.1.0 does not declare it — torch
+# imports it at runtime (`demucs.transformer` imports numpy directly).
+demucs>=4.1.0
+numpy

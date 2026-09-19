@@ -1,0 +1,9 @@
+{
+  "name": "stemora",
+  "private": true,
+  "scripts": {
+    "dev:mobile": "cd mobile && npm run start",
+    "dev:server": "cd server && npm run dev",
+    "typecheck": "cd mobile && npm run typecheck && cd ../server && npm run typecheck"
+  }
+}

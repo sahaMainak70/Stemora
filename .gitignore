@@ -1,0 +1,8 @@
+node_modules/
+.expo/
+dist/
+temp/
+output/
+.venv/
+.env
+.DS_Store
