@@ -24,9 +24,17 @@ export class SeparatorError extends ApiError {
   }
 }
 
+export const SEPARATION_STEMS = [2, 4] as const;
+export type SeparationStems = (typeof SEPARATION_STEMS)[number];
+
+export const SEPARATION_QUALITIES = ["standard", "fast"] as const;
+export type SeparationQuality = (typeof SEPARATION_QUALITIES)[number];
+
 export interface SeparateMediaInput {
   inputPath: string;
   jobId: string;
+  stems?: SeparationStems;
+  quality?: SeparationQuality;
   onProgress?: (fraction: number) => void;
 }
 
@@ -82,28 +90,34 @@ export async function separateMedia(input: SeparateMediaInput): Promise<Separate
   const outDir = path.join(jobTempDir(input.jobId), "stems");
   await mkdir(outDir, { recursive: true });
 
+  const args = [
+    SEPARATE_SCRIPT,
+    "--stems",
+    String(input.stems ?? 2),
+    "--quality",
+    input.quality ?? "standard",
+    input.inputPath,
+    outDir,
+  ];
+
   let stdout = "";
   try {
-    const result = await runSubprocessLineStream(
-      python,
-      [SEPARATE_SCRIPT, input.inputPath, outDir],
-      {
-        timeoutMs: SEPARATION_TIMEOUT_MS,
-        onLine: (rawLine) => {
-          if (input.onProgress === undefined) return;
-          let line: unknown;
-          try {
-            line = JSON.parse(rawLine);
-          } catch {
-            return;
-          }
-          const progress = (line as { progress?: unknown }).progress;
-          if (typeof progress === "number" && Number.isFinite(progress)) {
-            input.onProgress(clamp01(progress));
-          }
-        },
+    const result = await runSubprocessLineStream(python, args, {
+      timeoutMs: SEPARATION_TIMEOUT_MS,
+      onLine: (rawLine) => {
+        if (input.onProgress === undefined) return;
+        let line: unknown;
+        try {
+          line = JSON.parse(rawLine);
+        } catch {
+          return;
+        }
+        const progress = (line as { progress?: unknown }).progress;
+        if (typeof progress === "number" && Number.isFinite(progress)) {
+          input.onProgress(clamp01(progress));
+        }
       },
-    );
+    });
     stdout = result.stdout;
   } catch (error) {
     throw mapSeparatorError(error);

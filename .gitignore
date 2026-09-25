@@ -6,3 +6,7 @@ output/
 .venv/
 .env
 .DS_Store
+
+# Native projects are generated on demand (expo prebuild / expo run:android).
+android/
+ios/

@@ -11,7 +11,7 @@ function errorResponse(res: Response, status: number, error: ErrorBody): void {
   res.status(status).json({ error });
 }
 
-export function getOutputFile(req: Request, res: Response): void {
+export async function getOutputFile(req: Request, res: Response): Promise<void> {
   const jobId = String(req.params.jobId ?? "");
   const filename = String(req.params.filename ?? "");
 
@@ -20,7 +20,7 @@ export function getOutputFile(req: Request, res: Response): void {
     return;
   }
 
-  const job = getJob(jobId);
+  const job = await getJob(jobId);
   if (!job) {
     errorResponse(res, 404, { code: "JOB_NOT_FOUND", message: `job ${jobId} not found` });
     return;

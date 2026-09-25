@@ -29,6 +29,14 @@ export const ALLOWED_OUTPUT_FILES: ReadonlySet<string> = new Set([
   "vocals.mp3",
   "instrumental.wav",
   "instrumental.mp3",
+  "drums.wav",
+  "drums.mp3",
+  "bass.wav",
+  "bass.mp3",
+  "other.wav",
+  "other.mp3",
+  "mix.wav",
+  "mix.mp3",
 ]);
 
 export function resolveServableFile(jobId: string, filename: string): string | null {

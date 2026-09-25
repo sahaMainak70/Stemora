@@ -1,5 +1,13 @@
-import { API_BASE_URL } from "@/constants/config";
-import type { ApiErrorBody, JobResponse } from "@/types/api";
+import { API_BASE_URL, JOB_STEMS } from "@/constants/config";
+import type {
+  ApiErrorBody,
+  BatchResponse,
+  JobResponse,
+  MixGains,
+  StemKind,
+  WaveformResponse,
+} from "@/types/api";
+import type { ExportFormat } from "@/types/settings";
 
 export class ApiError extends Error {
   readonly code: string;
@@ -67,12 +75,57 @@ export function submitJob(url: string): Promise<JobResponse> {
   return request<JobResponse>("/api/jobs", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ url, stems: JOB_STEMS }),
+  });
+}
+
+export function submitBatch(urls: string[]): Promise<BatchResponse> {
+  return request<BatchResponse>("/api/batch", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ urls, stems: JOB_STEMS }),
+  });
+}
+
+export function getBatch(batchId: string): Promise<BatchResponse> {
+  return request<BatchResponse>(`/api/batch/${encodeURIComponent(batchId)}`);
+}
+
+export function cancelBatch(batchId: string): Promise<BatchResponse> {
+  return request<BatchResponse>(`/api/batch/${encodeURIComponent(batchId)}/cancel`, {
+    method: "POST",
+  });
+}
+
+export function cancelJob(jobId: string): Promise<JobResponse> {
+  return request<JobResponse>(`/api/jobs/${encodeURIComponent(jobId)}/cancel`, {
+    method: "POST",
+  });
+}
+
+export const MIN_MIX_GAIN = 0;
+export const MAX_MIX_GAIN = 1;
+
+export function submitMix(
+  jobId: string,
+  gains: MixGains,
+  format: ExportFormat,
+): Promise<JobResponse> {
+  return request<JobResponse>(`/api/jobs/${encodeURIComponent(jobId)}/mix`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ gains, format }),
   });
 }
 
 export function getJob(jobId: string): Promise<JobResponse> {
   return request<JobResponse>(`/api/jobs/${encodeURIComponent(jobId)}`);
+}
+
+export function getStemWaveform(jobId: string, stem: StemKind): Promise<WaveformResponse> {
+  return request<WaveformResponse>(
+    `/api/jobs/${encodeURIComponent(jobId)}/waveform/${encodeURIComponent(stem)}`,
+  );
 }
 
 export function fileUrl(jobId: string, filename: string): string {

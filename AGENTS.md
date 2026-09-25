@@ -14,6 +14,6 @@ Then read the current unit's spec in `context/specs/` before writing any code.
 Rules:
 
 - Never start a unit whose dependencies (per `context/specs/00-build-plan.md`) aren't already built.
-- Never build V2/V3/V4 features while a V1 unit is in progress. Versions are hard scope boundaries — see `ai-workflow-rules.md`.
+- Never build V2/V3 features while a V1 unit is in progress. Versions are hard scope boundaries — see `ai-workflow-rules.md`.
 - Update `context/progress-tracker.md` after each meaningful implementation change.
 - If implementation changes the architecture, scope, or standards documented in the context files, update the relevant file before continuing — don't let docs drift from code.

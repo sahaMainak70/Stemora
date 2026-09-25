@@ -1,5 +1,5 @@
 import type { ErrorRequestHandler } from "express";
-import { toErrorBody, type ErrorBody } from "./apiError.js";
+import { ApiError, toErrorBody, type ApiErrorCode, type ErrorBody } from "./apiError.js";
 
 interface StatusedError {
   status?: number;
@@ -7,14 +7,22 @@ interface StatusedError {
   type?: string;
 }
 
+// HTTP status for ApiError codes that surface through the request pipeline.
+const HTTP_STATUS_BY_CODE: Partial<Record<ApiErrorCode, number>> = {
+  REDIS_UNAVAILABLE: 503,
+};
+
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   const raw = err as StatusedError;
+  const byCode = err instanceof ApiError ? HTTP_STATUS_BY_CODE[err.code] : undefined;
   const status =
-    typeof raw.status === "number"
-      ? raw.status
-      : typeof raw.statusCode === "number"
-        ? raw.statusCode
-        : 500;
+    byCode !== undefined
+      ? byCode
+      : typeof raw.status === "number"
+        ? raw.status
+        : typeof raw.statusCode === "number"
+          ? raw.statusCode
+          : 500;
 
   let errorBody: ErrorBody;
   if (status >= 500) {

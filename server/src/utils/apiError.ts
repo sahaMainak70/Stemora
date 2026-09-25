@@ -8,8 +8,11 @@ export const API_ERROR_CODES = [
   "TIMEOUT",
   "JOB_NOT_FOUND",
   "FILE_NOT_FOUND",
+  "BATCH_NOT_FOUND",
+  "NOT_FOUND",
   "RATE_LIMITED",
   "BAD_REQUEST",
+  "REDIS_UNAVAILABLE",
   "INTERNAL_ERROR",
 ] as const;
 

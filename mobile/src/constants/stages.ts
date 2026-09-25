@@ -8,12 +8,30 @@ export type Stage = {
   status: StageStatus;
 };
 
+// One source of truth for the copy behind a stage, so the Processing checklist
+// and the in-flight Recent row can never disagree about what a stage is called.
+const STAGE_LABEL: Record<JobStage, string> = {
+  downloading: "Downloading",
+  extracting: "Extracting audio",
+  processing: "Separating stems",
+  encoding: "Encoding files",
+  mixing: "Mixing stems",
+  completed: "Finishing up",
+};
+
 export const PIPELINE_STAGES: { key: JobStage; label: string }[] = [
-  { key: "downloading", label: "Downloading" },
-  { key: "extracting", label: "Extracting audio" },
-  { key: "processing", label: "Separating stems" },
-  { key: "encoding", label: "Encoding files" },
+  { key: "downloading", label: STAGE_LABEL.downloading },
+  { key: "extracting", label: STAGE_LABEL.extracting },
+  { key: "processing", label: STAGE_LABEL.processing },
+  { key: "encoding", label: STAGE_LABEL.encoding },
 ];
+
+// What the user sees as the current step: the stage the job reports, or
+// "Starting" while it is still queued (no stage yet).
+export function stageLabel(stage: JobStage | null): string {
+  if (!stage) return "Starting";
+  return STAGE_LABEL[stage] ?? "Starting";
+}
 
 const PIPELINE_ORDER: JobStage[] = PIPELINE_STAGES.map((stage) => stage.key);
 

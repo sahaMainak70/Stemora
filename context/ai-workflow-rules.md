@@ -6,7 +6,7 @@ These are rules, not suggestions. Follow them exactly.
 
 - This project is spec-driven and incremental. Work is planned in `context/specs/00-build-plan.md` as numbered units, each with its own spec file created just before it's implemented.
 - Build one unit at a time, in the order listed in the build plan. Do not skip ahead or combine units unless the build plan explicitly merges them.
-- Do not start V2, V3, or V4 work while any V1 unit is incomplete. Versions are hard scope boundaries — see "Version Boundaries" below.
+- Do not start V2 or V3 work while any V1 unit is incomplete. Versions are hard scope boundaries — see "Version Boundaries" below.
 
 ## Scoping Rules
 
@@ -17,7 +17,8 @@ These are rules, not suggestions. Follow them exactly.
 ## Version Boundaries
 
 - V1 must reach its full success criteria (see `project-overview.md`) before any V2 unit begins.
-- When asked to make a "small addition" that actually belongs to a later version (e.g., a V3 feature requested during V1), say so explicitly and ask whether to defer it, rather than quietly implementing it early.
+- **Version labels follow the restructured plan in `context/specs/00-build-plan.md`:** V2 now absorbs the former V3 ("Expanded separation") scope plus the editing window / stem mixer; the former V4 is the new V3. V2 = Units 16–26, V3 = Units 27–33.
+- When asked to make a "small addition" that actually belongs to a later version, say so explicitly and ask whether to defer it, rather than quietly implementing it early.
 
 ## Handling Missing or Ambiguous Requirements
 
